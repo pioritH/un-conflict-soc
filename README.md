@@ -136,10 +136,12 @@ Richardson's (1948) empirical finding for war casualty distributions.
 - Prof. Rajesh — course instructor and project brief
 
 **AI Prompts used:**
-1. *"I need to complete this project... model similar to forest fire model... UN as a system controlling smaller conflicts... sudden big war emerges as catastrophe"*
-2. *"What does it show?"* (on simulation screenshot)
-3. *"Gen entire project for me — everything that is required for submission"*
 
+1. *"Help me design a complexity science project using a forest-fire model analogy for conflict dynamics (SOC framework)."*
+2. *"Explain self-organized criticality, avalanche distributions, and their relevance to real-world systems like conflicts."*
+3. *"Help debug and structure a Python cellular automaton simulation for modeling tension growth and cascading events."*
+4. *"Suggest ways to visualize avalanche size distributions and interpret log-log plots."*
+5. *"Review and improve clarity of explanations in the manuscript without changing core ideas or results."*
 ---
 
 ## References
