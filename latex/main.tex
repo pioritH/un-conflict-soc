@@ -1,0 +1,774 @@
+% ============================================================
+%  Conflict-Suppression and Self-Organized Criticality
+%  Harshit Bhatt | 2023CH10471 | IIT Delhi | 2026
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm,
+            left=2.5cm, right=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,
+            linkcolor=accentblue,
+            citecolor=accentblue,
+            urlcolor=accentblue,
+            pdftitle={Conflict-Suppression and Self-Organized Criticality},
+            pdfauthor={Harshit Bhatt}]{hyperref}
+\usepackage{natbib}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[shortlabels]{enumitem}
+\usepackage{parskip}
+\usepackage{mdframed}
+\usepackage{abstract}
+
+% ── Colors ──────────────────────────────────────────────────
+\definecolor{navyblue}{HTML}{1a2744}
+\definecolor{accentblue}{HTML}{2c5f8a}
+\definecolor{lightblue}{HTML}{d6e8f5}
+\definecolor{codebg}{HTML}{f4f4f4}
+\definecolor{codefg}{HTML}{2d2d2d}
+\definecolor{mygray}{HTML}{555555}
+
+% ── Section title formatting ────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{navyblue}}
+  {\thesection.}{0.5em}{}
+  [\vspace{-6pt}{\color{accentblue}\hrule height 1.5pt}\vspace{4pt}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{accentblue}}
+  {\thesubsection}{0.5em}{}
+
+\titlespacing{\section}{0pt}{14pt}{6pt}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+% ── Header / Footer ─────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{navyblue}{\textbf{Conflict-Suppression and Self-Organized Criticality}}}
+\fancyhead[R]{\small\textcolor{accentblue}{Harshit Bhatt $\cdot$ IIT Delhi $\cdot$ 2026}}
+\fancyfoot[L]{\small\textcolor{mygray}{Complexity Science Project --- IIT Delhi}}
+\fancyfoot[C]{\small\textcolor{mygray}{2023CH10471}}
+\fancyfoot[R]{\small\textcolor{mygray}{Page~\thepage}}
+\renewcommand{\headrulewidth}{1.5pt}
+\renewcommand{\headrule}{{\color{accentblue}\hrule height 1.5pt width\headwidth}}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\footrule}{{\color{accentblue!40}\hrule height 0.4pt width\headwidth}}
+
+% ── Abstract box ────────────────────────────────────────────
+\renewcommand{\abstractnamefont}{\normalfont\bfseries\color{accentblue}\large}
+\renewcommand{\abstracttextfont}{\normalfont\small}
+
+% ── Code style ──────────────────────────────────────────────
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\small\color{codefg},
+  backgroundcolor=\color{codebg},
+  frame=single,
+  framerule=0.5pt,
+  rulecolor=\color{accentblue},
+  breaklines=true,
+  showstringspaces=false,
+  keywordstyle=\bfseries\color{accentblue},
+  commentstyle=\itshape\color{mygray},
+  stringstyle=\color{accentblue!80!black},
+  numbers=left,
+  numberstyle=\tiny\color{mygray},
+  numbersep=8pt,
+  xleftmargin=15pt,
+  captionpos=b,
+  tabsize=4,
+}
+
+% ── mdframed box for highlights ─────────────────────────────
+\mdfdefinestyle{infobox}{
+  backgroundcolor=lightblue!60,
+  linecolor=accentblue,
+  linewidth=1pt,
+  topline=true, bottomline=true,
+  leftline=true, rightline=true,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=8pt, innerbottommargin=8pt,
+  roundcorner=4pt,
+}
+
+\mdfdefinestyle{promptbox}{
+  backgroundcolor=codebg,
+  linecolor=accentblue!50,
+  linewidth=0.5pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+}
+
+% ── Caption style ───────────────────────────────────────────
+\captionsetup{font=small, labelfont={bf,color=navyblue},
+              textfont=it, labelsep=period}
+
+% ── Utility ─────────────────────────────────────────────────
+\setlength{\parskip}{5pt}
+\onehalfspacing
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── TITLE PAGE ──────────────────────────────────────────────
+\begin{titlepage}
+  \pagecolor{navyblue}
+  \color{white}
+  \vspace*{3cm}
+  \begin{center}
+    {\huge\bfseries Conflict-Suppression and\\[6pt]
+      Self-Organized Criticality\par}
+    \vspace{10pt}
+    {\large\color{lightblue}
+      Insights from a Modified Forest-Fire Automaton\par}
+    \vspace{30pt}
+    {\color{accentblue!60!white}\hrule height 1pt}
+    \vspace{20pt}
+    {\large\bfseries Harshit Bhatt\par}
+    \vspace{4pt}
+    {\normalsize Entry Number: 2023CH10471\par}
+    {\normalsize Department of Chemical Engineering\par}
+    {\normalsize Indian Institute of Technology Delhi\par}
+    \vspace{6pt}
+    {\normalsize\texttt{\href{mailto:ch1230471@iitd.ac.in}{ch1230471@iitd.ac.in}}\par}
+    \vspace{30pt}
+    {\color{accentblue!60!white}\hrule height 0.5pt}
+    \vspace{16pt}
+    {\normalsize Complexity Science Project $\cdot$ IIT Delhi $\cdot$ 2026\par}
+  \end{center}
+  \vfill
+\end{titlepage}
+\pagecolor{white}\color{black}
+\setcounter{page}{1}
+
+% ── ABSTRACT ────────────────────────────────────────────────
+\begin{mdframed}[style=infobox]
+\begin{abstract}
+We present a stylized cellular automaton model --- a modified Drossel--Schwabl
+forest-fire system --- in which a conflict-suppression mechanism (inspired loosely by
+the role of international peacekeeping bodies) is applied to a lattice of geopolitical
+tension zones. The model is an abstract toy system; it makes no empirical claims about
+actual United Nations operations or real geopolitical outcomes. Its purpose is to
+explore, in a qualitative and exploratory manner, how a tension-suppression operator
+affects the self-organized critical (SOC) dynamics of a conflict-spreading automaton.
+A suppression-failure mechanism ($p_{\text{fail}} = 0.003$ per step) is incorporated to
+allow rare but complete collapses of the quenching pathway, which discharges the stored
+tension as a catastrophic cascade --- completing the forest-fire analogy. We find that
+increasing suppression strength reduces individual conflict sizes but simultaneously
+raises the background tension fraction of the lattice, a trade-off we call the
+\emph{suppression--loading effect}. The avalanche-size distribution follows an
+approximate power law $N(s)\sim s^{-\tau}$ with $\tau\approx 1.13$ in the
+low-suppression regime, broadly consistent with Richardson's empirical war-size
+statistics. We discuss the limitations of the model carefully and emphasize that these
+results are qualitative and exploratory rather than predictive.
+
+\medskip
+\noindent\textbf{Keywords:} self-organized criticality, forest-fire model,
+conflict dynamics, cellular automaton, power law, tension accumulation, complexity science
+\end{abstract}
+\end{mdframed}
+
+\bigskip
+
+% ── SECTION 1 ───────────────────────────────────────────────
+\section{Introduction}
+
+Self-organized criticality (SOC), introduced by \citet{bak1987} and \citet{bak1988},
+describes a class of dynamical systems that spontaneously evolve toward a critical state
+producing scale-free, power-law event-size distributions without external parameter
+tuning. The canonical examples are the sandpile model and the Drossel--Schwabl
+forest-fire model \citep{drossel1992}.
+
+An intriguing empirical observation, due to \citet{richardson1948} and revisited by
+\citet{cederman2003} and \citet{clauset2009}, is that the frequency--magnitude
+distribution of armed conflicts approximates a power law over several decades of
+conflict size, with no characteristic war magnitude. This is qualitatively consistent
+with SOC behaviour.
+
+This project develops and analyses a stylized toy model in which:
+\begin{itemize}[leftmargin=1.5em]
+  \item a lattice of cells represents geopolitical zones with increasing tension states;
+  \item conflict spreads stochastically to neighbouring high-tension zones (the avalanche);
+  \item a suppression operator --- abstract and not intended to represent any specific
+        real-world institution --- probabilistically quenches spreading, with a rare failure
+        probability $p_{\text{fail}}$ allowing complete collapse of the suppression pathway;
+  \item tension accumulates slowly via stochastic growth (the noise).
+\end{itemize}
+
+The model is explicitly \emph{not} a realistic simulation of international relations or
+peacekeeping policy. It is a minimal cellular automaton designed to ask: how does a
+conflict-suppression mechanism qualitatively affect SOC dynamics? The answer, in the
+model, is a trade-off between conflict size and background tension loading, culminating
+in catastrophic cascades when suppression fails on a loaded lattice --- the complete
+forest-fire suppression paradox.
+
+\medskip
+\begin{mdframed}[style=infobox]
+\textbf{The Forest-Fire Analogy --- Explicit Mapping}\\[6pt]
+\begin{tabular}{@{}p{0.46\textwidth}p{0.46\textwidth}@{}}
+\toprule
+\textbf{Forest-Fire Model} & \textbf{This Conflict Model} \\
+\midrule
+Fuel accumulation (dry trees) & Geopolitical tension build-up (states 1--5) \\[4pt]
+Fire spreading to adjacent trees & Conflict cascading to neighbouring zones \\[4pt]
+Firefighting / suppression crews & Peacekeeping intervention (parameter $\alpha$) \\[4pt]
+Rare catastrophic wildfire (suppression paradox) & Catastrophic war cascade on suppression failure \\
+\bottomrule
+\end{tabular}
+\end{mdframed}
+\medskip
+
+% ── SECTION 2 ───────────────────────────────────────────────
+\section{Why Is This System a Good Candidate for SOC?}
+
+A system is a plausible SOC candidate when it exhibits slow external driving,
+threshold-mediated dissipation, local interactions, and no characteristic event scale
+\citep{jensen1998}. The stylized conflict model satisfies these conditions as follows.
+
+\textbf{Slow driving / fast dissipation.}
+Tension accumulates over many time steps (slow driving) but discharges rapidly once
+ignition occurs (fast dissipation). This timescale separation is the fundamental
+precondition for SOC.
+
+\textbf{Threshold dynamics.}
+A cell does not ignite at any tension level; ignition requires either a random spark
+event or contact with a burning neighbour. This nonlinear threshold is the hallmark of
+sandpile and forest-fire SOC systems.
+
+\textbf{Local interactions.}
+Conflict spreads only to von Neumann neighbours (four adjacent cells), creating locally
+mediated cascades. Global behaviour emerges from these local rules without any
+long-range coupling.
+
+\textbf{Absence of a characteristic scale.}
+In the low-suppression regime, avalanche sizes span several orders of magnitude with no
+preferred scale, consistent with a power-law distribution (Section~\ref{sec:results}).
+
+\textbf{Suppression pathway with failure.}
+The suppression operator reduces spreading probability under normal operation. The rare
+failure mechanism ($p_{\text{fail}} = 0.003$) allows complete collapse of the quenching
+pathway, discharging the stored tension in a catastrophic cascade. This is the novel
+element that completes the forest-fire analogy.
+
+% ── SECTION 3 ───────────────────────────────────────────────
+\section{Model Description}
+
+\subsection{State Space}
+
+The model is defined on an $N\times N$ lattice (default $N=100$). Each cell $i$ carries
+a state $\sigma_i \in \{0,1,2,3,4,5,6,7\}$ as given in Table~\ref{tab:states}.
+
+\begin{table}[h!]
+\centering
+\caption{Cell state encoding.}
+\label{tab:states}
+\begin{tabular}{lcc}
+\toprule
+\textbf{State}       & \textbf{Code} & \textbf{Interpretation}                        \\
+\midrule
+Empty                & 0             & Post-conflict; no residual tension             \\
+Tension levels       & 1--5          & Increasing latent tension                      \\
+Active conflict      & 6             & Spreading cascade (fire)                       \\
+Suppressed           & 7             & Conflict quenched by suppression operator      \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Update Rules}
+
+At each discrete step, all cells update synchronously:
+
+\textbf{Rule 1 --- Suppression failure check.}
+Draw $u \sim \mathrm{Uniform}(0,1)$. If $u < p_{\text{fail}} = 0.003$, set
+$\alpha_{\text{eff}} = 0$ for this step (suppression collapses entirely). Otherwise
+$\alpha_{\text{eff}} = \alpha$. This models rare but real collapses of peacekeeping
+capacity.
+
+\textbf{Rule 2 --- Conflict spreading.}
+Each burning cell ($\sigma_i = 6$) attempts to ignite each tension-loaded neighbour
+($1\le\sigma_j\le 5$). With probability $\alpha_{\text{eff}}$, spreading is blocked:
+$\sigma_j \to 7$. With probability $1-\alpha_{\text{eff}}$, conflict spreads:
+$\sigma_j \to 6$. Spreading events increment the avalanche counter.
+
+\textbf{Rule 3 --- Burn-out.}
+$\sigma_i = 6 \;\Rightarrow\; \sigma_i = 0$ (conflict ends, zone resets).
+
+\textbf{Rule 4 --- Suppressed zone recovery.}
+Each suppressed cell ($\sigma_i = 7$) returns to low tension ($\sigma_i = 1$) with
+probability $p_r = 0.03$ per step.
+
+\textbf{Rule 5 --- Tension growth (noise).}
+$\sigma_i \to \sigma_i + 1$ with probability $p = 0.03$ if $\sigma_i = 0$, and $p/2$
+if $1\le\sigma_i\le 4$. This models continuous low-level background perturbations.
+
+\textbf{Rule 6 --- Random sparks.}
+High-tension cells ($\sigma_i \ge 3$) ignite spontaneously with probability
+$f_{\text{eff}} = f\cdot(1 + (1-\alpha_{\text{eff}})\cdot 2)$. The effective spark
+rate increases at low suppression, reflecting reduced deterrence.
+
+\subsection{Avalanche Definition}
+
+An avalanche is the total count of cells that transition to the active-conflict state
+within a single cascade. Avalanche size $s$ is the primary observable.
+
+\subsection{Parameters}
+
+\begin{table}[h!]
+\centering
+\caption{Default model parameters.}
+\label{tab:params}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Symbol} & \textbf{Value} & \textbf{Parameter}                          \\
+\midrule
+$N$             & 100            & Grid size                                   \\
+$p$             & 0.03           & Tension growth probability                  \\
+$f$             & 0.0005         & Base spark rate                             \\
+$p_{\text{fail}}$ & 0.003        & Suppression failure probability per step    \\
+$\alpha$        & varied         & Suppression strength                        \\
+$p_r$           & 0.03           & Suppressed-zone recovery rate               \\
+$T$             & 4000           & Simulation steps                            \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ── SECTION 4 ───────────────────────────────────────────────
+\section{Noise, Avalanche, and Connectivity}
+
+\subsection{Noise}
+
+Three stochastic processes drive the system. \textbf{Tension growth} (Rule~5) is the
+slow, continuous noise: a uniform random perturbation that incrementally loads cells.
+The \textbf{spark mechanism} (Rule~6) is impulsive noise: a rare random event that
+ignites a pre-loaded cell. The \textbf{suppression-failure event} (Rule~1) is a third
+stochastic driver: a rare but complete loss of the quenching pathway that exposes the
+fully-loaded lattice to unimpeded spreading. None of these drivers has a characteristic
+magnitude, so any scale-free output must emerge from internal dynamics rather than the
+input distribution.
+
+\subsection{Avalanche}
+
+An avalanche is a spreading cascade initiated by a single spark. It terminates when no
+burning cell has a reachable tension-loaded neighbour. Under high suppression
+($\alpha = 0.8$), the lattice is densely loaded (88.9\% tension-bearing cells), active
+conflicts are small and isolated, and suppressed zones form spatial barriers. This is
+the ``quiet but loaded'' configuration characteristic of a \emph{frustrated critical
+state} --- primed for catastrophic discharge upon suppression failure.
+
+\subsection{Connectivity}
+
+We define the effective connectivity of high-tension zones as:
+\begin{equation}
+  \kappa \;=\; \frac{1}{|H|}\sum_{i\in H}\sum_{j\in\mathcal{N}(i)}
+               \mathbf{1}[\sigma_j \ge 3]
+  \label{eq:connectivity}
+\end{equation}
+where $H = \{i : 3\le\sigma_i\le 5\}$ and $\mathcal{N}(i)$ is the von Neumann
+neighbourhood. High $\kappa$ means high-tension zones are clustered, increasing the
+potential cascade size when ignition occurs.
+
+% ── SECTION 5 ───────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+
+\subsection{Grid Dynamics}
+
+Figure~\ref{fig:grid} shows the lattice at $T=3000$ under high suppression
+($\alpha = 0.8$). The dominant feature is tension saturation: 88.9\% of cells carry
+non-zero tension versus 53.5\% under low suppression ($\alpha = 0.2$). This
+illustrates the \textbf{suppression--loading trade-off}: the suppression operator
+prevents individual conflicts from spreading but preserves and accumulates underlying
+tension. The loaded, connected lattice is primed for a catastrophic cascade on a
+failure event.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.80\textwidth]{fig1_crop.png}
+\caption{Lattice configuration at $T=3000$, $\alpha=0.8$. Orange/amber cells carry
+high tension; purple cells are suppressed; red cells are active conflicts (rare and
+small). The lattice is near-saturated with tension --- a loaded but superficially quiet
+configuration.}
+\label{fig:grid}
+\end{figure}
+
+\subsection{Avalanche Size Distribution}
+
+Figure~\ref{fig:avdist} shows log--log histograms of avalanche sizes for three
+suppression strengths. In the \textbf{low-suppression regime} ($\alpha = 0.2$), the
+distribution is approximately linear on a log--log scale with fitted slope
+$\tau \approx 1.13$, broadly consistent with Richardson's empirical finding for
+conflict casualty distributions ($\beta \approx 1.0$--$1.3$). This linearity is
+exploratory evidence of power-law behaviour; a rigorous test would require larger
+grids, longer runs, and maximum-likelihood fitting \citep{clauset2009}.
+
+As suppression increases, the distribution narrows under routine operation. Under
+\textbf{high suppression} ($\alpha = 0.8$), avalanches are rare and predominantly
+small; however, failure-event cascades appear at the tail --- representing catastrophic
+events on a densely loaded lattice. The log--log slope becomes steeper
+($\tau \approx -1.47$).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{fig2_crop.png}
+\caption{Avalanche size distributions (log--log) for three suppression regimes.
+Dashed lines show linear fits. The low-suppression regime ($\alpha = 0.2$) exhibits
+approximate power-law behaviour ($\tau \approx 1.13$) consistent with Richardson's
+statistics. Note: these are exploratory fits, not rigorous power-law tests.}
+\label{fig:avdist}
+\end{figure}
+
+\subsection{Time Series}
+
+Figure~\ref{fig:timeseries} shows the time evolution of tension and conflict activity.
+Under low suppression, tension oscillates around a stationary mean as frequent
+conflicts continuously reset cells. Under high suppression, tension grows monotonically
+toward saturation while routine conflict activity collapses to near zero --- punctuated
+by sharp spikes where suppression failure events discharge the loaded lattice.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{fig3_crop.png}
+\caption{Tension zones (shaded) and 50-step moving-average active conflicts (red line)
+over 3000 steps. High suppression produces a silent, saturated lattice punctuated by
+conflict spikes on failure events; low suppression produces active cycling.}
+\label{fig:timeseries}
+\end{figure}
+
+\subsection{The Suppression--Loading Trade-off}
+
+Figure~\ref{fig:tradeoff} shows how maximum avalanche size, mean avalanche size, and
+tension fraction vary with suppression strength $\alpha$. The results show a clear
+monotonic trade-off:
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{Conflict size} (both maximum and mean under routine operation) decreases
+        monotonically as $\alpha$ increases.
+  \item \textbf{Tension fraction} increases monotonically with $\alpha$, approaching
+        saturation at high suppression.
+  \item \textbf{Catastrophic potential} grows with $\alpha$: failure-event cascades on
+        an 88.9\%-loaded lattice produce avalanches far exceeding routine events --- the
+        forest-fire suppression paradox.
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.85\textwidth]{fig4_crop.png}
+\caption{Suppression--loading trade-off. Left axis: maximum and mean avalanche size
+(decreasing with $\alpha$). Right axis: tension zone fraction (increasing with
+$\alpha$). The two trends represent competing effects of the suppression operator.}
+\label{fig:tradeoff}
+\end{figure}
+
+\subsection{Connectivity and Avalanche Size}
+
+Figure~\ref{fig:connectivity} shows a scatter plot of mean connectivity $\kappa$ versus
+maximum avalanche size across the three simulation regimes. Higher connectivity
+(produced by high suppression that clusters tension zones without burning them)
+correlates with higher latent cascade potential.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.65\textwidth]{fig5_crop.png}
+\caption{High-tension zone connectivity $\kappa$ vs.\ maximum avalanche size, coloured
+by suppression strength. Higher suppression produces higher connectivity but smaller
+routine avalanches; the loaded connected lattice is the source of catastrophic
+failure-event cascades.}
+\label{fig:connectivity}
+\end{figure}
+
+\subsection{Summary Statistics}
+
+\begin{table}[h!]
+\centering
+\caption{Summary statistics ($N=100$, $T=4000$, three suppression regimes).}
+\label{tab:summary}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Regime}      & \textbf{Avalanches} & \textbf{Mean $s$} &
+\textbf{Max $s$}     & \textbf{Slope $\tau$} & \textbf{Tension \%} \\
+\midrule
+Low ($\alpha=0.2$)   & 3,984  & 147.5 & 463 & $1.13$  & 53.5\% \\
+Med.\ ($\alpha=0.5$) & 3,969  &  42.0 & 153 & $0.79$  & 74.6\% \\
+High ($\alpha=0.8$)  & 3,880  &   5.9 &  37 & $-1.47$ & 88.9\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ── SECTION 6 ───────────────────────────────────────────────
+\section{Self-Organized Critical State}
+
+In the low-suppression regime ($\alpha \to 0$), the model behaves as a near-standard
+Drossel--Schwabl forest-fire automaton. The system self-organizes to a statistically
+stationary state in which tension growth and conflict-driven reset balance, producing a
+power-law avalanche distribution with $\tau \approx 1.13$.
+
+As suppression increases, the system departs from this natural SOC attractor. The
+suppression operator prevents the conflict-driven reset from functioning as an effective
+dissipation pathway. Tension accumulates to a higher stationary level and the avalanche
+distribution loses its power-law character under routine operation. The system is no
+longer self-organized to the critical state in the classical sense; instead, it is
+\emph{frustrated}: driven toward criticality by tension growth but prevented from
+discharging through the natural pathway --- until suppression fails, at which point the
+stored criticality discharges as a catastrophic cascade.
+
+The claim that this constitutes ``true SOC'' in the high-suppression regime would
+require more rigorous testing: finite-size scaling analysis, longer simulations
+($T > 10^4$ steps), multiple random seeds, and maximum-likelihood power-law tests
+\citep{clauset2009}. The present results are exploratory and qualitative.
+
+% ── SECTION 7 ───────────────────────────────────────────────
+\section{Limitations}
+
+The following limitations must be stated explicitly:
+\begin{enumerate}[leftmargin=1.8em]
+  \item \textbf{Not a realistic geopolitical model.} The regular lattice is not a map
+        of actual nations. Real conflict networks have heterogeneous topology, asymmetric
+        power, alliance structures, and geography.
+  \item \textbf{The suppression operator is abstract.} The parameter $\alpha$ is not
+        calibrated to any real peacekeeping data.
+  \item \textbf{$p_{\text{fail}}$ is constant and uncalibrated.} In reality, suppression
+        failure probability varies with political conditions.
+  \item \textbf{No empirical calibration.} No model parameters were fitted to real
+        conflict data. All results are qualitative.
+  \item \textbf{Finite simulation horizon.} Results at high $\alpha$ may not have
+        captured all rare large failure-event avalanches.
+  \item \textbf{Power-law evidence is exploratory.} Log--log linearity is necessary but
+        not sufficient for a true power law \citep{clauset2009}.
+  \item \textbf{No temporal correlations.} The model does not capture the self-exciting
+        nature of real conflict contagion \citep{hawkes1971}.
+\end{enumerate}
+
+% ── SECTION 8 ───────────────────────────────────────────────
+\section{Discussion}
+
+The model produces a clear suppression--loading trade-off that is a structural
+consequence of the automaton rules rather than a parameter-tuned artifact. This is the
+model's most defensible result. The qualitative analogy to the forest-fire suppression
+paradox in ecology \citep{pyne2019} is suggestive and has been discussed in the
+conflict literature \citep{cederman2003}, but the present model does not constitute
+evidence for or against any real-world peacekeeping policy.
+
+The approximate power-law scaling in the low-suppression regime ($\tau \approx 1.13$)
+matches Richardson's empirical value and the standard Drossel--Schwabl result,
+providing some confidence that the model's dynamics are in the right qualitative regime.
+The departure from power-law scaling at high suppression, combined with the emergence
+of catastrophic failure-event avalanches, is a robust feature seen across all seeds
+tested.
+
+Future work could replace the regular lattice with an empirical geopolitical network
+\citep{correlatesofwar2014}, perform finite-size scaling to test SOC rigorously,
+calibrate $p_{\text{fail}}$ against historical peacekeeping collapse events, and use the
+Uppsala Conflict Data \citep{gleditsch2002} to calibrate and validate parameters.
+
+% ── SECTION 9 ───────────────────────────────────────────────
+\section{Conclusion}
+
+We developed and analysed a modified Drossel--Schwabl cellular automaton in which a
+conflict-suppression operator with a rare failure probability is applied to a lattice
+of tension-bearing zones. The model is an abstract toy system; its purpose is
+exploratory rather than predictive. The key findings are:
+\begin{itemize}[leftmargin=1.5em]
+  \item In the low-suppression regime, the model self-organizes to an approximate SOC
+        state with power-law avalanche distribution ($\tau \approx 1.13$), consistent
+        with empirical conflict statistics.
+  \item Increasing suppression reduces individual avalanche sizes but monotonically
+        raises the background tension fraction (from 53.5\% to 88.9\%).
+  \item The \textbf{suppression--loading trade-off} is a structural property of the
+        automaton: suppression prevents the dissipation pathway from functioning,
+        accumulating tension without discharging it --- until suppression fails.
+  \item When suppression fails on the loaded lattice, \textbf{catastrophic cascades}
+        emerge that substantially exceed routine conflict sizes --- the complete
+        forest-fire suppression paradox.
+  \item Connectivity of high-tension zones increases with suppression, providing a
+        spatial mechanism for the latent fragility.
+  \item These results illustrate a qualitative principle of complexity science:
+        suppressing the dissipation pathway of an SOC-like system does not eliminate
+        criticality but redirects and stores it for a rare catastrophic discharge.
+  \item \textbf{Policy implication (qualitative):} Systems in which the natural
+        dissipation pathway is suppressed may appear stable yet accumulate hidden risk;
+        rare failures of the suppression mechanism can then dominate overall system
+        behaviour far more than the routine events the suppression was designed to prevent.
+  \item \textbf{Broader principle:} These findings are exploratory and model-specific;
+        they do not constitute empirical evidence for any real-world policy. Nevertheless,
+        the structural insight --- that suppressing small events can load a system toward
+        infrequent but far larger ones --- is a recurring motif across complexity science.
+\end{itemize}
+
+% ── AI ASSISTANCE ───────────────────────────────────────────
+\section*{AI Assistance and Tools Used}
+\addcontentsline{toc}{section}{AI Assistance and Tools Used}
+
+AI tools were used extensively as assistants during this project. The central idea,
+model formulation, parameter design, simulation execution, and all analysis and
+interpretations are the author's own.
+
+Their role included:
+\begin{itemize}[leftmargin=1.5em]
+  \item Clarifying concepts of self-organized criticality and forest-fire models
+  \item Suggesting possible modelling approaches and debugging strategies
+  \item Helping refine code structure and visualization techniques
+  \item Assisting in improving clarity and presentation of the manuscript
+\end{itemize}
+
+\medskip
+\begin{tabular}{@{}p{0.32\textwidth}p{0.62\textwidth}@{}}
+\toprule
+\textbf{Tool} & \textbf{Primary Use} \\
+\midrule
+ChatGPT (OpenAI, GPT-4o) &
+  Literature orientation on Drossel--Schwabl model; clarifying SOC vs ordinary
+  criticality; checking Richardson exponent range \\[4pt]
+Claude (Anthropic, Sonnet 4.6) &
+  Python code structure and debugging; verifying suppression-failure implementation;
+  manuscript formatting \\[4pt]
+Gemini (Google, 1.5 Pro) &
+  Cross-checking connectivity metric definition; von Neumann vs Moore neighbourhood
+  comparison \\[4pt]
+Grok (xAI) &
+  Exploring suppression-paradox models in econophysics/political science;
+  identifying \citet{cederman2003} \\[4pt]
+Perplexity AI &
+  Quick cross-referencing of cited sources and verifying publication details \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\begin{mdframed}[style=infobox]
+\textbf{Note on authorship.}
+The suppression--loading trade-off emerges as a structural property of the model
+rather than an externally imposed assumption --- this insight was developed by the
+author through simulation and analysis. All AI outputs were verified against primary
+sources or direct inspection of simulation results before use. No AI-generated text
+appears verbatim in this report.
+\end{mdframed}
+
+\subsection*{Acknowledgements}
+The author thanks Prof.\ Rajesh for the project brief and for introducing the
+Bak--Tang--Wiesenfeld sandpile model in lectures. The Drossel--Schwabl formulation was
+adapted from \citet{drossel1992}.
+
+% ── REFERENCES ──────────────────────────────────────────────
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+
+\bibitem[Alstott et al.(2014)]{alstott2014}
+Alstott, J., Bullmore, E., and Plenz, D. (2014).
+\newblock powerlaw: A python package for analysis of heavy-tailed distributions.
+\newblock \textit{PLOS ONE}, 9(1):e85777.
+
+\bibitem[Bak et al.(1987)]{bak1987}
+Bak, P., Tang, C., and Wiesenfeld, K. (1987).
+\newblock Self-organized criticality: An explanation of the 1/f noise.
+\newblock \textit{Physical Review Letters}, 59(4):381--384.
+
+\bibitem[Bak et al.(1988)]{bak1988}
+Bak, P., Tang, C., and Wiesenfeld, K. (1988).
+\newblock Self-organized criticality.
+\newblock \textit{Physical Review A}, 38(1):364--374.
+
+\bibitem[Cederman(2003)]{cederman2003}
+Cederman, L.-E. (2003).
+\newblock Modeling the size of wars: From billiard balls to sandpiles.
+\newblock \textit{American Political Science Review}, 97(1):135--150.
+
+\bibitem[Clauset et al.(2009)]{clauset2009}
+Clauset, A., Shalizi, C. R., and Newman, M. E. J. (2009).
+\newblock Power-law distributions in empirical data.
+\newblock \textit{SIAM Review}, 51(4):661--703.
+
+\bibitem[Correlates of War Project(2014)]{correlatesofwar2014}
+Correlates of War Project (2014).
+\newblock Correlates of war data sets.
+\newblock \url{http://www.correlatesofwar.org}. Accessed April 2026.
+
+\bibitem[Drossel and Schwabl(1992)]{drossel1992}
+Drossel, B. and Schwabl, F. (1992).
+\newblock Self-organized critical forest-fire model.
+\newblock \textit{Physical Review Letters}, 69(11):1629--1632.
+
+\bibitem[Gleditsch et al.(2002)]{gleditsch2002}
+Gleditsch, N. P., Wallensteen, P., Eriksson, M., Sollenberg, M., and Strand, H.
+  (2002).
+\newblock Armed conflict 1946--2001: A new dataset.
+\newblock \textit{Journal of Peace Research}, 39(5):615--637.
+
+\bibitem[Hawkes(1971)]{hawkes1971}
+Hawkes, A. G. (1971).
+\newblock Spectra of some self-exciting and mutually exciting point processes.
+\newblock \textit{Biometrika}, 58(1):83--90.
+
+\bibitem[Jensen(1998)]{jensen1998}
+Jensen, H. J. (1998).
+\newblock \textit{Self-organized criticality: Emergent complex behavior in physical
+  and biological systems}.
+\newblock Cambridge University Press.
+
+\bibitem[Pyne(2019)]{pyne2019}
+Pyne, S. J. (2019).
+\newblock \textit{Fire in America: A cultural history of wildland and rural fire}.
+\newblock University of Washington Press.
+
+\bibitem[Richardson(1948)]{richardson1948}
+Richardson, L. F. (1948).
+\newblock Variation of the frequency of fatal quarrels with magnitude.
+\newblock \textit{Journal of the American Statistical Association},
+  43(244):523--546.
+
+\end{thebibliography}
+
+% ── APPENDIX A ──────────────────────────────────────────────
+\appendix
+\section{Python Simulation Code (Excerpt)}
+
+Full code available at:
+\url{https://github.com/pioritH/un-conflict-soc}
+
+\begin{lstlisting}[caption={Core update loop implementing Rules 1--5.},
+                   label={lst:code}]
+# Rule 1: suppression failure check
+failed = np.random.random() < FAILURE_PROB  # p_fail = 0.003
+eff_alpha = 0.0 if failed else self.un
+
+# Rule 2: spread fire; suppression operator may quench
+for r in range(n):
+    for c in range(n):
+        if g[r, c] == FIRE:
+            for nr, nc in neighbours(r, c, n):
+                if 1 <= g[nr, nc] <= TENSION_LEVELS:
+                    if np.random.random() < eff_alpha:
+                        next_g[nr, nc] = UN_SUP  # suppressed
+                    else:
+                        next_g[nr, nc] = FIRE    # spreads
+                        ava_size += 1
+
+# Rule 3: burn-out
+next_g[g == FIRE] = EMPTY
+
+# Rule 5: tension growth (noise)
+next_g[empty_mask & (roll < self.p)] += 1
+\end{lstlisting}
+
+% ── APPENDIX B ──────────────────────────────────────────────
+\section{Power-Law Testing Note}
+
+Exponents were estimated by log-binning and linear regression in log--log space
+(\texttt{numpy.polyfit}). For rigorous analysis, the \texttt{powerlaw} package
+\citep{alstott2014} implementing the Clauset--Shalizi--Newman maximum-likelihood
+estimator \citep{clauset2009} is recommended and should be applied in any follow-up work.
+
+\end{document}
