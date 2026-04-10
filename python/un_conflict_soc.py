@@ -11,7 +11,7 @@ The model demonstrates that UN peacekeeping, by suppressing small
 conflicts, loads the global system toward a self-organized critical
 state, ultimately making catastrophic world wars more likely.
 
-Author  : [Your Name]
+Author  : [Harshit Bhatt]
 Course  : Complexity Science Project
 Deadline: April 10, 2026
 """
